@@ -30,6 +30,12 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
     return Scaffold(
       appBar: AppBar(
         title: Text('Flutter & New Relic App'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _downloadApplicationData,
+          )
+        ],
       ),
       body: _buildList(),
     );
