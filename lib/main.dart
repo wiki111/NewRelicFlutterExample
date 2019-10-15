@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_new_relic_app/model/application.dart';
+import 'package:flutter_new_relic_app/services/webservice.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget{
 
 class NewRelicApplicationsState extends State<NewRelicApplications>{
 
-  final _applications = List<Application>();
+  final _applications = List<ApplicationData>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,68 +31,56 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
       appBar: AppBar(
         title: Text('Flutter & New Relic App'),
       ),
-      body: FutureBuilder<List<Application>>(
-        future: fetchApplicationsData(),
-        builder: (context, snapshot){
-          if(snapshot.hasData){
-            _applications.clear();
-            _applications.addAll(snapshot.data);
-            return _buildApplicationsList();
-          }else if(snapshot.hasError){
-            return Text("${snapshot.error}");
-          }
-
-          return CircularProgressIndicator();
-        },
-      ),
+      body: _buildList(),
     );
   }
 
-  Future<List<Application>> fetchApplicationsData() async{
-    Map<String, String> headers = {
-      'X-Api-Key' : 'b50ba7909bbe16d17a7412848280be9f350f10f39790d72'
-    };
 
-    final response = await http.get('https://api.eu.newrelic.com/v2/applications.json', headers: headers);
-
-    if(response.statusCode == 200){
-      Map<String, dynamic> parsedJson = json.decode(response.body);
-      var list = parsedJson['applications'] as List;
-      return list.map((i) => Application.fromJson(i)).toList();
-    }else{
-      throw Exception('Couldn\' fetch data from New Relic');
-    }
+  @override
+  void initState() {
+    super.initState();
+    _downloadApplicationData();
   }
 
-  Widget _buildApplicationsList(){
+  void _downloadApplicationData(){
+    _applications.clear();
+    WebService().load(ApplicationData.all).then((data) => {
+      setState(() => {
+        _applications.addAll(data)
+      })
+    });
+  }
+
+
+  Widget _buildList(){
     return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, index){
-          return Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('App id : ${_applications[index].id}'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('App name : ${_applications[index].name}'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Health : ${_applications[index].health}'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Reporting : ${_applications[index].reporting}'),
-              ),
-              Divider(
-                height: 3.0,
-                color: Colors.green[200],
-              )
-            ],
-          );
-        },
+      padding: const EdgeInsets.all(16.0),
+      itemBuilder: (context, index){
+        return Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('App id : ${_applications[index].id}'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('App name : ${_applications[index].name}'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Health : ${_applications[index].health}'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Reporting : ${_applications[index].reporting}'),
+            ),
+            Divider(
+              height: 3.0,
+              color: Colors.green[200],
+            )
+          ],
+        );
+      },
       itemCount: _applications.length,
     );
   }

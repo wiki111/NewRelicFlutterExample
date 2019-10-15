@@ -1,17 +1,33 @@
-class Application{
+import 'dart:convert';
+
+import 'package:flutter_new_relic_app/services/webservice.dart';
+
+class ApplicationData{
   final int id;
   final String name;
   final String health;
   final bool reporting;
 
-  Application({this.id, this.name, this.health, this.reporting});
+  ApplicationData({this.id, this.name, this.health, this.reporting});
 
-  factory Application.fromJson(Map<String, dynamic> json){
-    return Application(
+  factory ApplicationData.fromJson(Map<String, dynamic> json){
+    return ApplicationData(
       id : json['id'],
       name : json['name'],
       health : json['health_status'],
       reporting: json['reporting']
+    );
+  }
+
+  static Resource<List<ApplicationData>> get all {
+    return Resource(
+      url : 'https://api.eu.newrelic.com/v2/applications.json',
+      headers: {'X-Api-Key' : 'b50ba7909bbe16d17a7412848280be9f350f10f39790d72'},
+      parse: (response){
+        Map<String, dynamic> parsedJson = json.decode(response.body);
+        var list = parsedJson['applications'] as List;
+        return list.map((i) => ApplicationData.fromJson(i)).toList();
+      }
     );
   }
 }
