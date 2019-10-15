@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_new_relic_app/model/application.dart';
 import 'package:flutter_new_relic_app/services/webservice.dart';
-import 'package:http/http.dart' as http;
-
+import 'package:http/http.dart';
 
 void main() => runApp(MyApp());
 
@@ -50,7 +47,8 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
 
   void _downloadApplicationData(){
     _applications.clear();
-    WebService().load(ApplicationData.all).then((data) => {
+    Client client = Client();
+    WebService().load(ApplicationData.all, client).then((data) => {
       setState(() => {
         _applications.addAll(data)
       })

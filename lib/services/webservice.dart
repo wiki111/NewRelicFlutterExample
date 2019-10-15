@@ -9,8 +9,8 @@ class Resource<T> {
 }
 
 class WebService {
-  Future<T> load<T>(Resource<T> resource) async{
-    final response = await get(resource.url, headers: resource.headers);
+  Future<T> load<T>(Resource<T> resource, Client client) async{
+    final response = await client.get(resource.url, headers: resource.headers);
 
     if(response.statusCode == 200){
       return resource.parse(response);
