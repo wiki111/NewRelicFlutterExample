@@ -35,7 +35,7 @@ main(){
               .load(ApplicationData.all, client)
               .then((data) => result.addAll(data));
 
-          //expect(result.length, 1);
+          expect(result.length, 1);
           expect(result[0].id, 12345);
           expect(result[0].name, 'Test');
           expect(result[0].health, 'neutral');
