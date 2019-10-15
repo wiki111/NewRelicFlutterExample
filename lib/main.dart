@@ -66,23 +66,36 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('App id : ${_applications[index].id}'),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text('App id : ${_applications[index].id}'),
+              )
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('App name : ${_applications[index].name}'),
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('App name : ${_applications[index].name}'),
+                )
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Health : ${_applications[index].health}'),
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Health : ${_applications[index].health}'),
+                )
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Reporting : ${_applications[index].reporting}'),
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Reporting : ${_applications[index].reporting}'),
+                )
             ),
             Divider(
-              height: 3.0,
-              color: Colors.green[200],
+              height: 10.0,
+              color: Colors.blue[900],
+              thickness: 1.0,
             )
           ],
         );
