@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_new_relic_app/forms/api_form.dart';
 import 'package:flutter_new_relic_app/model/application.dart';
 import 'package:flutter_new_relic_app/services/webservice.dart';
@@ -63,29 +64,28 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
   @override
   void initState() {
     super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => _downloadApplicationData());
   }
+
 
   void _downloadApplicationData(){
     _applications.clear();
     Client client = Client();
     if(_apiKey != null){
-      try{
         WebService().load(ApplicationData.all(_apiKey), client).then((data) => {
           setState(() => {
             _applications.addAll(data)
           })
-        });
-      }catch(e){
-        showDialog(context: context,
-        builder: (BuildContext context) =>
-        _buildAlertDialog(
+        }).catchError((error) => {
+          showDialog(context: context,
+            builder: (BuildContext context) =>
+            _buildAlertDialog(
             'Connection error.',
             'Unable to fetch data from New Relic API. '
             + 'Most probable cause is invalid API key. '
             + 'Please try to input API key again.')
-        );
-      }
-
+          )
+        });
     }else{
       showDialog(
         context: context,
