@@ -45,6 +45,7 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
             RaisedButton(
               child: Text('Input API key'),
               color: Colors.brown[300],
+              textColor: Colors.white,
               onPressed: () {_showFormGetApiKey(context);},
             )
         ],

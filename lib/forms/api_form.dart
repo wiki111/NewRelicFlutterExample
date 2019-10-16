@@ -19,13 +19,6 @@ class ApiFormState extends State<ApiForm>{
     return Scaffold(
       appBar: AppBar(
         title: Text('Input API key'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: Colors.white,
-            onPressed: () {Navigator.pop(context);},
-          )
-        ],
       ),
       body: _buildForm(),
     );
@@ -37,16 +30,19 @@ class ApiFormState extends State<ApiForm>{
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          TextFormField(
-            validator: (value) {
-              if(value.isEmpty || value.length != 47){
-                return 'Please enter valid API key';
-              }
-              return null;
-            },
-            onSaved: (String value){
-              _apiKey = value;
-            },
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: TextFormField(
+              validator: (value) {
+                if(value.isEmpty || value.length != 47){
+                  return 'Please enter valid API key';
+                }
+                return null;
+              },
+              onSaved: (String value){
+                _apiKey = value;
+              },
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -58,6 +54,8 @@ class ApiFormState extends State<ApiForm>{
                 }
               },
               child: Text('Submit'),
+              color: Colors.brown[300],
+              textColor: Colors.white,
             ),
           )
         ],
