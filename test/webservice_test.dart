@@ -26,13 +26,13 @@ main(){
         'returns a list of ApplicationData if call completes successfully',
         () async{
           final client = MockClient();
-          when(client.get(ApplicationData.all.url, headers: ApplicationData.all.headers))
+          when(client.get(ApplicationData.all('exampleapikey').url, headers: ApplicationData.all('exampleapikey').headers))
               .thenAnswer((_) async => Response(json.encode(fakeResponse), 200));
 
           List<ApplicationData> result = List<ApplicationData>();
 
           await WebService()
-              .load(ApplicationData.all, client)
+              .load(ApplicationData.all('exampleapikey'), client)
               .then((data) => result.addAll(data));
 
           expect(result.length, 1);
@@ -46,10 +46,10 @@ main(){
       'throws exception if response code is other than 200',
       () async{
         final client = MockClient();
-        when(client.get(ApplicationData.all.url, headers: ApplicationData.all.headers))
+        when(client.get(ApplicationData.all('exampleapikey').url, headers: ApplicationData.all('exampleapikey').headers))
             .thenAnswer((_) async => Response('Not found', 404));
         expect(WebService()
-              .load(ApplicationData.all, client),
+              .load(ApplicationData.all('exampleapikey'), client),
             throwsException
         );
       }

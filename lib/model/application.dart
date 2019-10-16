@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_new_relic_app/services/webservice.dart';
 
 class ApplicationData{
@@ -19,10 +20,10 @@ class ApplicationData{
     );
   }
 
-  static Resource<List<ApplicationData>> get all {
+  static Resource<List<ApplicationData>> all(String apiKey) {
     return Resource(
       url : 'https://api.eu.newrelic.com/v2/applications.json',
-      headers: {'X-Api-Key' : 'b50ba7909bbe16d17a7412848280be9f350f10f39790d72'},
+      headers: {'X-Api-Key' : apiKey},
       parse: (response){
         Map<String, dynamic> parsedJson = json.decode(response.body);
         var list = parsedJson['applications'] as List;

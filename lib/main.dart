@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new_relic_app/forms/api_form.dart';
 import 'package:flutter_new_relic_app/model/application.dart';
 import 'package:flutter_new_relic_app/services/webservice.dart';
 import 'package:http/http.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget{
 class NewRelicApplicationsState extends State<NewRelicApplications>{
 
   final _applications = List<ApplicationData>();
+  String _apiKey;
 
   @override
   Widget build(BuildContext context) {
@@ -34,27 +36,88 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
           )
         ],
       ),
-      body: _buildList(),
+      body: Column(
+        children: <Widget>[
+            Expanded(
+              child: _buildList(),
+            ),
+            RaisedButton(
+              child: Text('Input API key'),
+              color: Colors.brown[300],
+              onPressed: () {_showFormGetApiKey(context);},
+            )
+        ],
+      ),
     );
   }
 
+    _showFormGetApiKey(BuildContext context) async{
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ApiForm())
+    );
+    _apiKey = result;
+    _downloadApplicationData();
+  }
 
   @override
   void initState() {
     super.initState();
+    this.build(context);
     _downloadApplicationData();
   }
 
   void _downloadApplicationData(){
     _applications.clear();
     Client client = Client();
-    WebService().load(ApplicationData.all, client).then((data) => {
-      setState(() => {
-        _applications.addAll(data)
-      })
-    });
+    if(_apiKey != null){
+      try{
+        WebService().load(ApplicationData.all(_apiKey), client).then((data) => {
+          setState(() => {
+            _applications.addAll(data)
+          })
+        });
+      }catch(e){
+        showDialog(context: context,
+        builder: (BuildContext context) =>
+        _buildAlertDialog(
+            'Connection error.',
+            'Unable to fetch data from New Relic API. '
+            + 'Most probable cause is invalid API key. '
+            + 'Please try to input API key again.')
+        );
+      }
+
+    }else{
+      showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            _buildAlertDialog(
+                "Missing API key",
+                "You have to specify an API key "
+                + "to download data from New Relic API")
+      );
+    }
   }
 
+  Widget _buildAlertDialog(String title, String message){
+    return new AlertDialog(
+      title: Text(title),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(message)
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: (){Navigator.of(context).pop();},
+          child: Text('Okay.'),
+      )
+      ],
+    );
+  }
 
   Widget _buildList(){
     return ListView.builder(
