@@ -20,6 +20,11 @@ class MyApp extends StatelessWidget{
   }
 }
 
+class NewRelicApplications extends StatefulWidget{
+  @override
+  State createState() => NewRelicApplicationsState();
+}
+
 class NewRelicApplicationsState extends State<NewRelicApplications>{
 
   final _applications = List<ApplicationData>();
@@ -32,6 +37,7 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
         title: Text('Flutter & New Relic App'),
         actions: <Widget>[
           IconButton(
+            key: Key('refresh_btn'),
             icon: Icon(Icons.refresh),
             onPressed: _downloadApplicationData,
           )
@@ -165,7 +171,3 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
   }
 }
 
-class NewRelicApplications extends StatefulWidget{
-  @override
-  State createState() => NewRelicApplicationsState();
-}
