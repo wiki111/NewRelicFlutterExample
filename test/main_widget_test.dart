@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new_relic_app/forms/api_form.dart';
 import 'package:flutter_new_relic_app/main.dart';
+import 'package:flutter_new_relic_app/services/webservice.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
+class MockWebService extends Mock implements WebService {}
 
 main(){
 
@@ -21,7 +25,8 @@ main(){
     testWidgets(
         'shows alert dialog at attempt of downloading data while there\'s no key',
         (WidgetTester tester) async{
-          await tester.pumpWidget(buildTestableWidget(NewRelicApplications()));
+          MockWebService mockWebService = MockWebService();
+          await tester.pumpWidget(buildTestableWidget(NewRelicApplications(webService: mockWebService,)));
           await tester.pump();
           //Alert dialog shows at startup (because of initState)
           expect(find.byType(AlertDialog), findsOneWidget);
@@ -36,5 +41,4 @@ main(){
           expect(find.text('Missing API key'), findsOneWidget);
         }
     );
-
 }

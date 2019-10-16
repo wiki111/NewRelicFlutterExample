@@ -15,20 +15,34 @@ class MyApp extends StatelessWidget{
       theme: ThemeData(
         primaryColor: Colors.brown[300]
       ),
-      home: NewRelicApplications(),
+      home: NewRelicApplications(webService: WebService()),
     );
   }
 }
 
 class NewRelicApplications extends StatefulWidget{
+
+  final WebService webService;
+
+  NewRelicApplications({@required this.webService});
+
   @override
-  State createState() => NewRelicApplicationsState();
+  State createState() => NewRelicApplicationsState(webService: webService);
 }
 
 class NewRelicApplicationsState extends State<NewRelicApplications>{
 
   final _applications = List<ApplicationData>();
   String _apiKey;
+  final webService;
+
+  NewRelicApplicationsState({@required this.webService});
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => _downloadApplicationData());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,18 +82,11 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
     _downloadApplicationData();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) => _downloadApplicationData());
-  }
-
-
   void _downloadApplicationData(){
     _applications.clear();
     Client client = Client();
     if(_apiKey != null){
-        WebService().load(ApplicationData.all(_apiKey), client).then((data) => {
+        webService.load(ApplicationData.all(_apiKey), client).then((data) => {
           setState(() => {
             _applications.addAll(data)
           })
