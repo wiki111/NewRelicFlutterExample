@@ -63,8 +63,6 @@ class NewRelicApplicationsState extends State<NewRelicApplications>{
   @override
   void initState() {
     super.initState();
-    this.build(context);
-    _downloadApplicationData();
   }
 
   void _downloadApplicationData(){
